@@ -1,18 +1,18 @@
-const CACHE_NAME = 'tracker-unit-v4'; // Jika nanti update tampilan besar, cukup ganti ini ke 'v5'
+const CACHE_NAME = 'tracker-unit-v4';
 const assets = [
   './',
   './index.html',
   './manifest.json'
 ];
 
-// Instalasi
+// Instalasi Assets Utama ke Dalam Cache Perangkat
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(assets))
   );
 });
 
-// Aktivasi & Hapus Cache Lama
+// Aktivasi & Pembersihan Cache Versi Lama Secara Otomatis
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys => {
@@ -25,19 +25,25 @@ self.addEventListener('activate', e => {
   );
 });
 
-// STRATEGI: Network First (Cek ke server dulu, baru ke cache)
+// OPTIMALISASI: Penerapan Network First Selektif Hanya untuk Request GET
 self.addEventListener('fetch', e => {
+  // Cegah intersep request POST (Data Sinkronisasi Google Sheets Agar Tidak Masuk Cache)
+  if (e.request.method !== 'GET') {
+    return; 
+  }
+  
   e.respondWith(
     fetch(e.request)
       .then(networkResponse => {
-        // Jika internet ada, update cache dengan file terbaru
-        return caches.open(CACHE_NAME).then(cache => {
-          cache.put(e.request, networkResponse.clone());
-          return networkResponse;
-        });
+        // Ambil data terbaru dari server jika online, lalu simpan salinannya ke cache
+        if (networkResponse && networkResponse.status === 200) {
+          const cacheCopy = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(e.request, cacheCopy));
+        }
+        return networkResponse;
       })
       .catch(() => {
-        // Jika offline, ambil dari cache
+        // Jika sedang offline (masuk area tanpa sinyal), gunakan cadangan cache lokal
         return caches.match(e.request);
       })
   );

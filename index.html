@@ -44,6 +44,79 @@
             background-color: #1e1e1e;
             color: #f3f4f6;
         }
+
+        /* High Contrast Outdoor Light Mode Styling */
+        body.light-theme {
+            background-color: #f3f4f6 !important;
+            color: #111827 !important;
+        }
+        body.light-theme .bg-cardBg {
+            background-color: #ffffff !important;
+            border-color: #d1d5db !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+        }
+        body.light-theme .bg-darkBg {
+            background-color: #e5e7eb !important;
+            border-color: #d1d5db !important;
+        }
+        body.light-theme .bg-darkBg\/40,
+        body.light-theme .bg-darkBg\/60 {
+            background-color: #f9fafb !important;
+            border-color: #e5e7eb !important;
+        }
+        body.light-theme .text-white {
+            color: #111827 !important;
+        }
+        body.light-theme .text-gray-200,
+        body.light-theme .text-gray-300 {
+            color: #1f2937 !important;
+        }
+        body.light-theme .text-gray-400 {
+            color: #4b5563 !important;
+        }
+        body.light-theme .text-gray-500 {
+            color: #6b7280 !important;
+        }
+        body.light-theme .border-gray-800,
+        body.light-theme .border-gray-700 {
+            border-color: #d1d5db !important;
+        }
+        body.light-theme .input-clean {
+            background-color: #ffffff !important;
+            border-color: #9ca3af !important;
+            color: #111827 !important;
+        }
+        body.light-theme .input-clean::placeholder {
+            color: #9ca3af !important;
+        }
+        body.light-theme input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0) !important;
+        }
+        body.light-theme .bg-gray-900\/50 {
+            background-color: #e5e7eb !important;
+            border-color: #d1d5db !important;
+        }
+        body.light-theme .bg-gray-900 {
+            background-color: #d1d5db !important;
+        }
+        body.light-theme datalist {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+        }
+        body.light-theme .hover\:bg-gray-800\/40:hover {
+            background-color: #e5e7eb !important;
+        }
+        body.light-theme .divide-gray-800 > :not([hidden]) ~ :not([hidden]) {
+            border-color: #d1d5db !important;
+        }
+        body.light-theme .bg-gray-800 {
+            background-color: #e5e7eb !important;
+            color: #374151 !important;
+            border-color: #d1d5db !important;
+        }
+        body.light-theme .bg-gray-800:hover {
+            background-color: #d1d5db !important;
+        }
     </style>
 </head>
 <body class="bg-darkBg text-gray-200 font-sans antialiased min-h-screen p-4 md:p-8">
@@ -66,9 +139,12 @@
                         <h1 class="text-2xl md:text-3xl font-bold text-white flex items-center"><i class="fa-solid fa-helmet-safety text-primary mr-3"></i>Check Unit & Operator</h1>
                         <p class="text-gray-400 text-sm mt-1">Sistem Terintegrasi Pemantauan Awal & Akhir Shift</p>
                     </div>
-                    <div class="mt-4 md:mt-0">
+                    <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
+                        <button onclick="toggleTheme()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold px-4 py-2 rounded-xl text-xs transition-all border border-gray-700">
+                            <i class="fa-solid fa-sun mr-2"></i> Mode Layar (Terang/Gelap)
+                        </button>
                         <button onclick="resetSemuaData()" class="bg-gray-800 hover:bg-danger/20 hover:text-danger hover:border-danger text-gray-400 font-semibold px-4 py-2 rounded-xl text-xs transition-all border border-gray-700">
-                            <i class="fa-solid fa-trash-can mr-2"></i> Reset Semua Data Perangkat
+                            <i class="fa-solid fa-trash-can mr-2"></i> Reset Perangkat
                         </button>
                     </div>
                 </div>
@@ -121,11 +197,8 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-900/50 p-4 rounded-xl border border-gray-800 gap-4">
                 <p class="text-xs text-gray-400 flex-1"><i class="fa-solid fa-circle-info text-primary mr-1"></i> Daftarkan unit dan ceklis kehadiran operator di sini sebelum shift dimulai. Keterangan tiap kategori bisa diedit langsung.</p>
                 <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                    <button onclick="kirimKeWA()" class="flex-1 sm:flex-initial bg-[#25D366] hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all flex items-center justify-center shadow-lg border border-green-700">
-                        <i class="fa-brands fa-whatsapp text-lg mr-2"></i> Kirim ke WA
-                    </button>
-                    <button id="btn-sinkron" onclick="kirimKeGoogleSheets()" class="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all flex items-center justify-center shadow-lg border border-blue-700">
-                        <i class="fa-solid fa-cloud-arrow-up text-lg mr-2"></i> Simpan ke Database
+                    <button onclick="kirimKeWA()" class="w-full sm:w-auto bg-[#25D366] hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg text-sm transition-all flex items-center justify-center shadow-lg border border-green-700">
+                        <i class="fa-brands fa-whatsapp text-lg mr-2"></i> Kirim ke WA (Awal)
                     </button>
                 </div>
             </div>
@@ -135,7 +208,7 @@
         <div id="page-akhir" class="hidden space-y-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-900/50 p-4 rounded-xl border border-gray-800 gap-4">
                 <p class="text-xs text-gray-400 flex-1"><i class="fa-solid fa-circle-info text-primary mr-1"></i> Tentukan status akhir unit saat shift selesai. Jika unit rusak, klik tombol <strong>BREAKDOWN</strong> dan isi keterangannya.</p>
-                <button onclick="kirimKeWAAkhir()" class="w-full sm:w-auto bg-[#25D366] hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all flex items-center justify-center shadow-lg border border-green-700">
+                <button onclick="kirimKeWAAkhir()" class="w-full sm:w-auto bg-[#25D366] hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg text-sm transition-all flex items-center justify-center shadow-lg border border-green-700">
                     <i class="fa-brands fa-whatsapp text-lg mr-2"></i> Kirim Report Akhir
                 </button>
             </div>
@@ -177,6 +250,16 @@
                         <tbody id="tabel-bd-body" class="divide-y divide-gray-800"></tbody>
                     </table>
                 </div>
+            </div>
+
+            <div class="bg-cardBg border border-gray-800 rounded-2xl p-6 shadow-lg flex flex-col sm:flex-row justify-between items-center gap-4 border-l-4 border-l-blue-500">
+                <div class="flex-1">
+                    <h3 class="text-base font-bold text-white flex items-center"><i class="fa-solid fa-cloud-arrow-up text-blue-500 mr-2"></i>Kunci & Simpan Database Pusat</h3>
+                    <p class="text-xs text-gray-400 mt-1">Pastikan Anda sudah membagikan laporan Awal Shift dan laporan Akhir Shift ke WhatsApp Group sebelum mengamankan data final ke Google Sheets.</p>
+                </div>
+                <button id="btn-sinkron" onclick="kirimKeGoogleSheets()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl text-sm transition-all flex items-center justify-center shadow-lg border border-blue-700">
+                    <i class="fa-solid fa-cloud-arrow-up text-lg mr-2"></i> Simpan ke Database
+                </button>
             </div>
         </div>
     </div>
@@ -269,7 +352,6 @@
                 dataLapang = patenCategories.map((name, idx) => {
                     const existing = parsed.find(c => c.kategori === name);
                     if (existing) {
-                        // Pastikan property keterangan tidak undefined dari data lama
                         existing.keterangan = existing.keterangan !== undefined ? existing.keterangan : defaultData[idx].keterangan;
                         return existing;
                     }
@@ -317,7 +399,6 @@
             dataLapang.forEach((catData, catIdx) => {
                 const totalUnit = catData.unit.length;
                 const checkedUnit = catData.unit.filter(u => u.checked).length;
-                // Aman dari karakter kutip (" ") yang bisa merusak atribut HTML
                 const amanKeterangan = (catData.keterangan || '').replace(/"/g, '&quot;');
 
                 let cardHTML = `
@@ -387,7 +468,7 @@
 
                 catData.unit.forEach((item, unitIdx) => {
                     const isBD = item.statusAkhir === "BREAKDOWN";
-                    const amanKendala = (item.kendala || '').replace(/"/g, '&quot;'); // Aman dari error kutip
+                    const amanKendala = (item.kendala || '').replace(/"/g, '&quot;');
                     
                     cardHTML += `
                         <li class="bg-darkBg/60 p-3 rounded-xl border border-gray-800 flex flex-col gap-3">
@@ -492,7 +573,6 @@
                 }
             });
 
-            // Tambahan Data Manpower
             pesan += `*SPV* : ${spv}\n`;
             pesan += `*Pengawas* : ${pengawas}\n`;
             pesan += `*Checker* : ${checker}\n`;
@@ -535,7 +615,6 @@
                 }
             });
 
-            // Samakan data Manpower di Laporan Akhir Shift
             pesan += `*Terima Kasih*\n`;
 
             pesan = pesan.trim();
@@ -562,10 +641,24 @@
         function addUnit(catIdx) {
             const idInput = document.getElementById(`add-id-${catIdx}`);
             const opInput = document.getElementById(`add-op-${catIdx}`);
-            if (!idInput.value.trim()) return alert("Kode Unit wajib diisi!");
+            const codeInput = idInput.value.trim().toUpperCase();
+            if (!codeInput) return alert("Kode Unit wajib diisi!");
+
+            // Validasi duplikasi unit lintas kategori secara global
+            let isExist = false;
+            dataLapang.forEach(cat => {
+                if(cat.unit.some(u => u.id === codeInput)) {
+                    isExist = true;
+                }
+            });
+
+            if (isExist) {
+                alert(`Gagal! Kode Unit ${codeInput} sudah terdaftar sebelumnya dalam sistem.`);
+                return;
+            }
 
             dataLapang[catIdx].unit.push({
-                id: idInput.value.trim().toUpperCase(),
+                id: codeInput,
                 operator: opInput.value.trim() || "Unknown",
                 checked: false, statusAkhir: "READY", kendala: ""
             });
@@ -586,6 +679,73 @@
             }
         }
 
+        /* FUNGSI TOGGLE THEME (OUTDOOR LIGHT MODE) */
+        function initTheme() {
+            const savedTheme = localStorage.getItem('v4_theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        }
+
+        function toggleTheme() {
+            if (document.body.classList.contains('light-theme')) {
+                document.body.classList.remove('light-theme');
+                localStorage.setItem('v4_theme', 'dark');
+            } else {
+                document.body.classList.add('light-theme');
+                localStorage.setItem('v4_theme', 'light');
+            }
+        }
+
+        /* PANEL SINIKRONISASI & ANTRIAN OFFLINE CONTAINER INDICATOR */
+        function updateSyncIndicator() {
+            const pendingData = localStorage.getItem('v4_pending_sync');
+            let indicator = document.getElementById('offline-sync-banner');
+            
+            if (pendingData) {
+                if (!indicator) {
+                    const mainClockContainer = document.getElementById('live-clock').parentElement;
+                    mainClockContainer.insertAdjacentHTML('afterend', `
+                        <div id="offline-sync-banner" onclick="trySyncPendingData()" class="mt-3 cursor-pointer bg-amber-500/20 border border-amber-600 text-amber-500 p-3 rounded-xl flex items-center justify-between text-xs font-bold animate-pulse">
+                            <span><i class="fa-solid fa-triangle-exclamation mr-2"></i> Ada data tertunda belum masuk server pusat (Offline Queue). Klik untuk sinkron ulang!</span>
+                            <span class="underline uppercase tracking-wider text-[10px]">Sinkron Sekarang</span>
+                        </div>
+                    `);
+                }
+            } else {
+                if (indicator) indicator.remove();
+            }
+        }
+
+        function trySyncPendingData() {
+            const pendingData = localStorage.getItem('v4_pending_sync');
+            if (!pendingData) return;
+
+            if (!navigator.onLine) {
+                alert("Koneksi Internet belum terdeteksi. Silakan cari sinyal terlebih dahulu!");
+                return;
+            }
+
+            const parsedData = JSON.parse(pendingData);
+            const banner = document.getElementById('offline-sync-banner');
+            if (banner) banner.innerHTML = '<span><i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengirim paksa data antrean pusat...</span>';
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(parsedData)
+            })
+            .then(res => res.text())
+            .then(result => {
+                alert("Luar Biasa! Data tunda luar jaringan berhasil terunggah sepenuhnya ke Google Sheets pusat.");
+                localStorage.removeItem('v4_pending_sync');
+                updateSyncIndicator();
+            })
+            .catch(err => {
+                alert("Proses sinkronisasi ulang gagal. Sistem mengamankan kembali data ke antrean perangkat.");
+                updateSyncIndicator();
+            });
+        }
+
         document.addEventListener('keypress', function(e) {
             if(e.key === 'Enter' && e.target.id.startsWith('add-')) {
                 const idx = e.target.id.split('-')[2];
@@ -597,7 +757,11 @@
             initDatalists();
             initClock();
             loadSavedData();
+            initTheme();
+            updateSyncIndicator();
         };
+
+        window.addEventListener('online', trySyncPendingData);
 
         // KONEKSI GOOGLE SHEETS API
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC_gNvZyvg2HWvZ2-9VuIe22tbd1cfqsrU4_nE3Qa1upmCaviA9r8SbpHplSyFdHKPmQ/exec";
@@ -637,8 +801,18 @@
 
             const btnSubmit = document.getElementById('btn-sinkron');
             const originalText = btnSubmit.innerHTML;
-            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengirim...';
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengunci Server...';
             btnSubmit.disabled = true;
+
+            // Logika Deteksi Koneksi Offline untuk Melakukan Queuing Data
+            if (!navigator.onLine) {
+                localStorage.setItem('v4_pending_sync', JSON.stringify(dataUntukDikirim));
+                alert("Koneksi Internet Terputus! Data Anda aman disimpan dalam antrean offline lokal browser. Cari sinyal dan klik banner di atas untuk unggah.");
+                btnSubmit.innerHTML = originalText;
+                btnSubmit.disabled = false;
+                updateSyncIndicator();
+                return;
+            }
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -647,14 +821,18 @@
             .then(response => response.text())
             .then(result => {
                 alert("Mantap! Data berhasil tersimpan ke sistem pusat (Google Sheets).");
+                localStorage.removeItem('v4_pending_sync');
                 btnSubmit.innerHTML = originalText;
                 btnSubmit.disabled = false;
+                updateSyncIndicator();
             })
             .catch(error => {
-                alert("Gagal mengirim data. Pastikan koneksi internet stabil.");
+                localStorage.setItem('v4_pending_sync', JSON.stringify(dataUntukDikirim));
+                alert("Gagal terhubung langsung. Data diamankan ke penyimpanan lokal antrean offline.");
                 console.error(error);
                 btnSubmit.innerHTML = originalText;
                 btnSubmit.disabled = false;
+                updateSyncIndicator();
             });
         }
     </script>
