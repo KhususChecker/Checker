@@ -1,41 +1,44 @@
-const CACHE_NAME = 'tracker-unit-v4';
+const CACHE_NAME = 'tracker-unit-v4'; // Jika nanti update tampilan besar, cukup ganti ini ke 'v5'
 const assets = [
   './',
   './index.html',
-  './manifest.json',
-  'https://cdn.tailwindcss.com',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
+  './manifest.json'
 ];
 
-// Proses Instalasi & Penyimpanan Aset ke Memori HP (Caching)
+// Instalasi
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(assets);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(assets))
   );
 });
 
-// Pembersihan Cache Versi Lama jika ada Pembaruan Sistem
+// Aktivasi & Hapus Cache Lama
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
         keys.map(key => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
       );
     })
   );
 });
 
-// Strategi Menjalankan Aplikasi secara Cepat & Mendukung Offline
+// STRATEGI: Network First (Cek ke server dulu, baru ke cache)
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(cachedResponse => {
-      return cachedResponse || fetch(e.request);
-    })
+    fetch(e.request)
+      .then(networkResponse => {
+        // Jika internet ada, update cache dengan file terbaru
+        return caches.open(CACHE_NAME).then(cache => {
+          cache.put(e.request, networkResponse.clone());
+          return networkResponse;
+        });
+      })
+      .catch(() => {
+        // Jika offline, ambil dari cache
+        return caches.match(e.request);
+      })
   );
 });
