@@ -1,7 +1,7 @@
 {
   "name": "Sistem Tracker Unit & Manpower v4",
-  "short_name": "Tracker Unit",
-  "description": "Sistem Terintegrasi Pemantauan Awal & Akhir Shift",
+  "short_name": "Checker",
+  "description": "Sistem Pemantauan Unit & Operator Awal & Akhir Shift",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#121212",
