@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Tracker Unit & Manpower</title>
+    <title>Sistem Tracker Unit & Manpower v4</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -119,7 +119,7 @@
 
         <div id="page-awal" class="space-y-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-900/50 p-4 rounded-xl border border-gray-800 gap-4">
-                <p class="text-xs text-gray-400 flex-1"><i class="fa-solid fa-circle-info text-primary mr-1"></i> Daftarkan unit dan ceklis kehadiran operator di sini sebelum shift dimulai. Sistem menggunakan kategori alat yang sudah dipatenkan.</p>
+                <p class="text-xs text-gray-400 flex-1"><i class="fa-solid fa-circle-info text-primary mr-1"></i> Daftarkan unit dan ceklis kehadiran operator di sini sebelum shift dimulai. Keterangan tiap kategori bisa diedit langsung.</p>
                 <div class="flex flex-wrap gap-2 w-full sm:w-auto">
                     <button onclick="kirimKeWA()" class="flex-1 sm:flex-initial bg-[#25D366] hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all flex items-center justify-center shadow-lg border border-green-700">
                         <i class="fa-brands fa-whatsapp text-lg mr-2"></i> Kirim ke WA
@@ -268,7 +268,12 @@
                 let parsed = JSON.parse(savedData);
                 dataLapang = patenCategories.map((name, idx) => {
                     const existing = parsed.find(c => c.kategori === name);
-                    return existing ? existing : JSON.parse(JSON.stringify(defaultData[idx]));
+                    if (existing) {
+                        // Pastikan property keterangan tidak undefined dari data lama
+                        existing.keterangan = existing.keterangan !== undefined ? existing.keterangan : defaultData[idx].keterangan;
+                        return existing;
+                    }
+                    return JSON.parse(JSON.stringify(defaultData[idx]));
                 });
             } else {
                 dataLapang = JSON.parse(JSON.stringify(defaultData));
@@ -300,6 +305,11 @@
             localStorage.setItem('v4_prod_data', JSON.stringify(dataLapang));
         }
 
+        function updateKeterangan(value, catIdx) {
+            dataLapang[catIdx].keterangan = value;
+            saveToStorage();
+        }
+
         function renderAwalShift() {
             const container = document.getElementById('unit-container-awal');
             container.innerHTML = '';
@@ -307,14 +317,19 @@
             dataLapang.forEach((catData, catIdx) => {
                 const totalUnit = catData.unit.length;
                 const checkedUnit = catData.unit.filter(u => u.checked).length;
+                // Aman dari karakter kutip (" ") yang bisa merusak atribut HTML
+                const amanKeterangan = (catData.keterangan || '').replace(/"/g, '&quot;');
 
                 let cardHTML = `
                     <div class="bg-cardBg rounded-2xl p-5 border border-gray-800 flex flex-col justify-between shadow-sm">
                         <div>
                             <div class="flex justify-between items-start mb-3 border-b border-gray-800 pb-2">
-                                <div>
+                                <div class="flex-1 mr-4">
                                     <h2 class="text-lg font-bold text-white">${catData.kategori} <span class="text-xs text-gray-500 font-mono">(${totalUnit})</span></h2>
-                                    <p class="text-[11px] text-primary">Ket: ${catData.keterangan}</p>
+                                    <div class="flex items-center text-[11px] text-primary mt-1">
+                                        <span class="mr-1">Ket:</span>
+                                        <input type="text" value="${amanKeterangan}" oninput="updateKeterangan(this.value, ${catIdx})" class="bg-transparent border-b border-gray-700 outline-none focus:border-primary flex-1 placeholder-gray-600" placeholder="Masukkan keterangan...">
+                                    </div>
                                 </div>
                                 <div class="flex items-center space-x-2">
                                     <span class="text-[10px] font-semibold px-2 py-0.5 bg-darkBg text-gray-400 rounded-md border border-gray-800">${checkedUnit}/${totalUnit} Masuk</span>
@@ -372,6 +387,8 @@
 
                 catData.unit.forEach((item, unitIdx) => {
                     const isBD = item.statusAkhir === "BREAKDOWN";
+                    const amanKendala = (item.kendala || '').replace(/"/g, '&quot;'); // Aman dari error kutip
+                    
                     cardHTML += `
                         <li class="bg-darkBg/60 p-3 rounded-xl border border-gray-800 flex flex-col gap-3">
                             <div class="flex justify-between items-center">
@@ -389,9 +406,9 @@
                                 </div>
                             </div>
                             
-                            <div class="${isBD ? 'block' : 'hidden'} animate-fade-in">
+                            <div class="${isBD ? 'block' : 'hidden'}">
                                 <label class="block text-[10px] text-danger font-bold uppercase mb-1">Detail Masalah / Keluhan Mekanik:</label>
-                                <input type="text" value="${item.kendala || ''}" oninput="updateKendala(this.value, ${catIdx}, ${unitIdx})" placeholder="Contoh: Hose hydraulic bocor / Engine low power" class="w-full input-clean text-xs border-danger/30 placeholder-gray-600">
+                                <input type="text" value="${amanKendala}" oninput="updateKendala(this.value, ${catIdx}, ${unitIdx})" placeholder="Contoh: Hose hydraulic bocor / Engine low power" class="w-full input-clean text-xs border-danger/30 placeholder-gray-600">
                             </div>
                         </li>
                     `;
@@ -456,6 +473,10 @@
             let shift = shiftRaw === 'Day Shift' ? 'Siang' : (shiftRaw === 'Night Shift' ? 'Malam' : shiftRaw);
             const tanggal = document.getElementById('info-tanggal').value;
             const tglFormatted = formatTanggal(tanggal);
+            
+            const spv = document.getElementById('staff-spv').value || '-';
+            const pengawas = document.getElementById('staff-pengawas').value || '-';
+            const checker = document.getElementById('staff-checker').value || '-';
 
             let pesan = `*Report Unit & Operator*\n\n`;
             pesan += `Area : ${area}\n`;
@@ -467,10 +488,16 @@
                     let catName = cat.kategori === 'HDT-HO' ? 'HDT' : cat.kategori;
                     pesan += `*${catName}* (${cat.unit.length})\n`;
                     cat.unit.forEach(u => pesan += `• ${u.id} ${u.operator}\n`);
-                    pesan += `\nKet : ${cat.keterangan}\n\n`;
+                    pesan += `\nKet : ${cat.keterangan || '-'}\n\n`;
                 }
             });
 
+            // Tambahan Data Manpower
+            pesan += `*SPV* : ${spv}\n`;
+            pesan += `*Pengawas* : ${pengawas}\n`;
+            pesan += `*Checker* : ${checker}\n`;
+            pesan += `\n*Terima Kasih*`;
+            
             pesan = pesan.trim();
             const encodedText = encodeURIComponent(pesan);
             window.open(`https://wa.me/?text=${encodedText}`, '_blank');
@@ -482,6 +509,10 @@
             let shift = shiftRaw === 'Day Shift' ? 'Siang' : (shiftRaw === 'Night Shift' ? 'Malam' : shiftRaw);
             const tanggal = document.getElementById('info-tanggal').value;
             const tglFormatted = formatTanggal(tanggal);
+
+            const spv = document.getElementById('staff-spv').value || '-';
+            const pengawas = document.getElementById('staff-pengawas').value || '-';
+            const checker = document.getElementById('staff-checker').value || '-';
 
             let pesan = `*Report Unit Akhir Shift*\n\n`;
             pesan += `Area : ${area}\n`;
@@ -495,14 +526,17 @@
                     
                     cat.unit.forEach(u => {
                         if (u.statusAkhir === "BREAKDOWN") {
-                            pesan += `• ${u.id} - BD (${u.kendala || 'Tanpa Keterangan'})\n`;
+                            pesan += `• ${u.id} - *BD* (${u.kendala || 'Tanpa Keterangan'})\n`;
                         } else {
-                            pesan += `• ${u.id} - READY\n`;
+                            pesan += `• ${u.id} - *READY*\n`;
                         }
                     });
                     pesan += `\n`;
                 }
             });
+
+            // Samakan data Manpower di Laporan Akhir Shift
+            pesan += `*Terima Kasih*\n`;
 
             pesan = pesan.trim();
             const encodedText = encodeURIComponent(pesan);
