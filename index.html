@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Tracker Unit & Manpower v4</title>
+    <title>Sistem Tracker Unit & Manpower v4 Pro</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -46,82 +51,37 @@
         }
 
         /* High Contrast Outdoor Light Mode Styling */
-        body.light-theme {
-            background-color: #f3f4f6 !important;
-            color: #111827 !important;
-        }
-        body.light-theme .bg-cardBg {
-            background-color: #ffffff !important;
-            border-color: #d1d5db !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
-        }
-        body.light-theme .bg-darkBg {
-            background-color: #e5e7eb !important;
-            border-color: #d1d5db !important;
-        }
-        body.light-theme .bg-darkBg\/40,
-        body.light-theme .bg-darkBg\/60 {
-            background-color: #f9fafb !important;
-            border-color: #e5e7eb !important;
-        }
-        body.light-theme .text-white {
-            color: #111827 !important;
-        }
-        body.light-theme .text-gray-200,
-        body.light-theme .text-gray-300 {
-            color: #1f2937 !important;
-        }
-        body.light-theme .text-gray-400 {
-            color: #4b5563 !important;
-        }
-        body.light-theme .text-gray-500 {
-            color: #6b7280 !important;
-        }
-        body.light-theme .border-gray-800,
-        body.light-theme .border-gray-700 {
-            border-color: #d1d5db !important;
-        }
-        body.light-theme .input-clean {
-            background-color: #ffffff !important;
-            border-color: #9ca3af !important;
-            color: #111827 !important;
-        }
-        body.light-theme .input-clean::placeholder {
-            color: #9ca3af !important;
-        }
-        body.light-theme input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(0) !important;
-        }
-        body.light-theme .bg-gray-900\/50 {
-            background-color: #e5e7eb !important;
-            border-color: #d1d5db !important;
-        }
-        body.light-theme .bg-gray-900 {
-            background-color: #d1d5db !important;
-        }
-        body.light-theme datalist {
-            background-color: #ffffff !important;
-            color: #111827 !important;
-        }
-        body.light-theme .hover\:bg-gray-800\/40:hover {
-            background-color: #e5e7eb !important;
-        }
-        body.light-theme .divide-gray-800 > :not([hidden]) ~ :not([hidden]) {
-            border-color: #d1d5db !important;
-        }
-        body.light-theme .bg-gray-800 {
-            background-color: #e5e7eb !important;
-            color: #374151 !important;
-            border-color: #d1d5db !important;
-        }
-        body.light-theme .bg-gray-800:hover {
-            background-color: #d1d5db !important;
-        }
+        body.light-theme { background-color: #f3f4f6 !important; color: #111827 !important; }
+        body.light-theme .bg-cardBg { background-color: #ffffff !important; border-color: #d1d5db !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important; }
+        body.light-theme .bg-darkBg { background-color: #e5e7eb !important; border-color: #d1d5db !important; }
+        body.light-theme .bg-darkBg\/40, body.light-theme .bg-darkBg\/60 { background-color: #f9fafb !important; border-color: #e5e7eb !important; }
+        body.light-theme .text-white { color: #111827 !important; }
+        body.light-theme .text-gray-200, body.light-theme .text-gray-300 { color: #1f2937 !important; }
+        body.light-theme .text-gray-400 { color: #4b5563 !important; }
+        body.light-theme .text-gray-500 { color: #6b7280 !important; }
+        body.light-theme .border-gray-800, body.light-theme .border-gray-700 { border-color: #d1d5db !important; }
+        body.light-theme .input-clean { background-color: #ffffff !important; border-color: #9ca3af !important; color: #111827 !important; }
+        body.light-theme .input-clean::placeholder { color: #9ca3af !important; }
+        body.light-theme input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0) !important; }
+        body.light-theme .bg-gray-900\/50 { background-color: #e5e7eb !important; border-color: #d1d5db !important; }
+        body.light-theme .bg-gray-900 { background-color: #d1d5db !important; }
+        body.light-theme datalist { background-color: #ffffff !important; color: #111827 !important; }
+        body.light-theme .hover\:bg-gray-800\/40:hover { background-color: #e5e7eb !important; }
+        body.light-theme .divide-gray-800 > :not([hidden]) ~ :not([hidden]) { border-color: #d1d5db !important; }
+        body.light-theme .bg-gray-800 { background-color: #e5e7eb !important; color: #374151 !important; border-color: #d1d5db !important; }
+        body.light-theme .bg-gray-800:hover { background-color: #d1d5db !important; }
+
+        /* SweetAlert2 Dark Mode overrides */
+        .swal2-popup.swal-dark { background: #1e1e1e; color: #f3f4f6; border: 1px solid #374151; }
+        .swal2-title.swal-dark { color: #f3f4f6; }
     </style>
 </head>
-<body class="bg-darkBg text-gray-200 font-sans antialiased min-h-screen p-4 md:p-8">
+<body class="bg-darkBg text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto">
+    <div id="network-indicator" class="fixed top-4 right-4 z-50 flex items-center px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase transition-all shadow-lg border">
+        </div>
+
+    <div class="max-w-6xl mx-auto w-full flex-grow mt-10 md:mt-0">
         <div class="flex flex-col sm:flex-row justify-between items-center mb-6 bg-cardBg p-4 rounded-xl border border-gray-800 shadow-md">
             <div class="flex items-center space-x-3 mb-2 sm:mb-0">
                 <div class="w-3 h-3 bg-accent rounded-full animate-pulse"></div>
@@ -141,10 +101,10 @@
                     </div>
                     <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
                         <button onclick="toggleTheme()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold px-4 py-2 rounded-xl text-xs transition-all border border-gray-700">
-                            <i class="fa-solid fa-sun mr-2"></i> Mode Layar (Terang/Gelap)
+                            <i class="fa-solid fa-sun mr-2"></i> Mode Layar
                         </button>
                         <button onclick="resetSemuaData()" class="bg-gray-800 hover:bg-danger/20 hover:text-danger hover:border-danger text-gray-400 font-semibold px-4 py-2 rounded-xl text-xs transition-all border border-gray-700">
-                            <i class="fa-solid fa-trash-can mr-2"></i> Reset Perangkat
+                            <i class="fa-solid fa-trash-can mr-2"></i> Reset
                         </button>
                     </div>
                 </div>
@@ -181,21 +141,21 @@
             </div>
         </header>
 
-        <div class="flex bg-cardBg border border-gray-800 p-1.5 rounded-xl gap-2 mb-6 shadow-md">
+        <div class="flex flex-col md:flex-row bg-cardBg border border-gray-800 p-1.5 rounded-xl gap-2 mb-6 shadow-md">
             <button id="tab-awal" onclick="switchMenu('awal')" class="flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 bg-primary text-black">
-                <i class="fa-solid fa-play text-xs"></i> 1. Menu Awal Shift
+                <i class="fa-solid fa-play text-xs"></i> 1. Awal Shift
             </button>
             <button id="tab-akhir" onclick="switchMenu('akhir')" class="flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 text-gray-400 hover:bg-gray-800">
-                <i class="fa-solid fa-flag-checkered text-xs"></i> 2. Menu Akhir Shift
+                <i class="fa-solid fa-flag-checkered text-xs"></i> 2. Akhir Shift
             </button>
             <button id="tab-rekap" onclick="switchMenu('rekap')" class="flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 text-gray-400 hover:bg-gray-800">
-                <i class="fa-solid fa-square-poll-horizontal text-xs"></i> 3. Ringkasan Laporan
+                <i class="fa-solid fa-square-poll-horizontal text-xs"></i> 3. Laporan
             </button>
         </div>
 
         <div id="page-awal" class="space-y-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-900/50 p-4 rounded-xl border border-gray-800 gap-4">
-                <p class="text-xs text-gray-400 flex-1"><i class="fa-solid fa-circle-info text-primary mr-1"></i> Daftarkan unit dan ceklis kehadiran operator di sini sebelum shift dimulai. Keterangan tiap kategori bisa diedit langsung.</p>
+                <p class="text-xs text-gray-400 flex-1"><i class="fa-solid fa-circle-info text-primary mr-1"></i> Input dilengkapi <strong>Smart Validation</strong>. Ejaan nama dan unit harus sesuai dengan database agar rekap Excel valid.</p>
                 <div class="flex flex-wrap gap-2 w-full sm:w-auto">
                     <button onclick="kirimKeWA()" class="w-full sm:w-auto bg-[#25D366] hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg text-sm transition-all flex items-center justify-center shadow-lg border border-green-700">
                         <i class="fa-brands fa-whatsapp text-lg mr-2"></i> Kirim ke WA (Awal)
@@ -207,7 +167,7 @@
 
         <div id="page-akhir" class="hidden space-y-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-900/50 p-4 rounded-xl border border-gray-800 gap-4">
-                <p class="text-xs text-gray-400 flex-1"><i class="fa-solid fa-circle-info text-primary mr-1"></i> Tentukan status akhir unit saat shift selesai. Jika unit rusak, klik tombol <strong>BREAKDOWN</strong> dan isi keterangannya.</p>
+                <p class="text-xs text-gray-400 flex-1"><i class="fa-solid fa-circle-info text-primary mr-1"></i> Tentukan status akhir. Jika unit rusak, klik tombol <strong>BREAKDOWN</strong> dan isi keterangannya.</p>
                 <button onclick="kirimKeWAAkhir()" class="w-full sm:w-auto bg-[#25D366] hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg text-sm transition-all flex items-center justify-center shadow-lg border border-green-700">
                     <i class="fa-brands fa-whatsapp text-lg mr-2"></i> Kirim Report Akhir
                 </button>
@@ -236,7 +196,7 @@
             </div>
 
             <div class="bg-cardBg border border-gray-800 rounded-2xl p-6 shadow-lg">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center text-danger"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Daftar Unit Breakdown (Butuh Perbaikan)</h3>
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center text-danger"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Daftar Unit Breakdown</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-darkBg text-gray-400 text-xs uppercase tracking-wider">
@@ -254,22 +214,31 @@
 
             <div class="bg-cardBg border border-gray-800 rounded-2xl p-6 shadow-lg flex flex-col sm:flex-row justify-between items-center gap-4 border-l-4 border-l-blue-500">
                 <div class="flex-1">
-                    <h3 class="text-base font-bold text-white flex items-center"><i class="fa-solid fa-cloud-arrow-up text-blue-500 mr-2"></i>Kunci & Simpan Database Pusat</h3>
-                    <p class="text-xs text-gray-400 mt-1">Pastikan Anda sudah membagikan laporan Awal Shift dan laporan Akhir Shift ke WhatsApp Group sebelum mengamankan data final ke Google Sheets.</p>
+                    <h3 class="text-base font-bold text-white flex items-center"><i class="fa-solid fa-cloud-arrow-up text-blue-500 mr-2"></i>Pusat Data & Laporan</h3>
+                    <p class="text-xs text-gray-400 mt-1">Simpan data ke Google Sheets atau unduh PDF Laporan Eksekutif untuk diserahkan ke Manajemen.</p>
                 </div>
-                <button id="btn-sinkron" onclick="kirimKeGoogleSheets()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl text-sm transition-all flex items-center justify-center shadow-lg border border-blue-700">
-                    <i class="fa-solid fa-cloud-arrow-up text-lg mr-2"></i> Simpan ke Database
-                </button>
+                <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <button id="btn-pdf" onclick="generatePDF()" class="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-xl text-sm transition-all flex items-center justify-center border border-gray-600">
+                        <i class="fa-solid fa-file-pdf text-danger text-lg mr-2"></i> Export PDF
+                    </button>
+                    <button id="btn-sinkron" onclick="kirimKeGoogleSheets()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl text-sm transition-all flex items-center justify-center shadow-lg border border-blue-700">
+                        <i class="fa-solid fa-cloud-arrow-up text-lg mr-2"></i> Simpan DB
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+
+    <footer class="text-center py-6 text-xs text-gray-600 mt-8 w-full border-t border-gray-800/50">
+        <p>Sistem Pemantauan Operasional &middot; Powered by <strong class="text-primary tracking-wide">FALK PWA</strong></p>
+    </footer>
 
     <script>
         const operatorDB = {
             "Exca": ["Bahtiar Pasimanyeku", "Sulaiman", "Irwan Nupu", "Haeruddin", "Glorian Rifaldo Titalouw", "Nirwan A Rauf", "Muh. Patnan", "Mahfud Anwar", "Muhammad Jihad Iskandar", "Dony Setiawan", "Arfan Ajis Ino", "Taufik", "Andi Aldin Alpais", "Hilman Prajuli", "La Masrudin La Hebe", "M. Abdulhalik Judin", "Hariadi Siahaan", "Moh C hendri  Makalalag", "Fauzan Sialana", "Samsul Bahri Hanafi", "Muhamad Rois", "Muh.Pazli", "Aris Pratama", "Idrus Nupu", "Alwin Raybi Manus", "Mohamad Anwar", "Delvan Siang", "Rio", "Rizky Suhardi", "Alfaritzi  Rajalang", "Dwi Kristanto", "Riyo Krisno Putra Rayo", "Juprianus Arruan Banga", "Nofa", "Arsan", "Sarman (1)", "Afrizal", "Mohamand Cl. Damopolii", "Harnis Yunus", "Alvian A. Jamrud", "Andre Budi Santoso", "Hun Salindeho", "Nanung Sugiarto", "Syahrul Salamat", "Aditya Triagustian Harahap", "Joni Sari Bunga", "Merky Undap", "Rinaldi"],
             "Dozer": ["Alfian M arsyad", "Didik Rahmadi", "Markus Panggayu", "Dearly Sidigol", "Fredik Baceran", "Asropi", "Jumrih", "Arfan Man", "Samuel Rein Ngama", "Muhamat Lukti Kuncoro", "Riswanto Muhammad Ismu", "Verderycho Johanis Katiandagho", "Fristawanli Woyang", "Christian Fernando Iriando M", "Dodi Batloloni", "Rogatama Rumahorbo", "Roni Tiboya", "Yusril Kaunar", "Sultan Aulia Pays", "Irianto", "Mario Supit", "Dominggus Embuai", "Redy Leloltery", "Sattu", "Bakkulla", "Beny Wawo", "Steven G. Matubun", "Efendi Hartanto", "Yulius Randa Kareba", "Tri Simon Nugroho Seko", "Andika (2)", "Teven Salamba", "Hanis Yunus", "Elo Sulo", "Supardi Alim", "Syamsu Rijal", "La Musiadi La Jafar", "Hirman Saenudin", "Hidayat Akbar Haning", "Sabtian Oktora Agustinus"],
             "Compac": ["Rasdan Ode Ratif", "Adam Yunianto", "Alfinus Katiandago", "Pajar", "Abrar", "Awiyanto", "Margi D Huwae", "Risaldi Soamole", "Ahsinil Umam", "Syarifuddin"],
-            "HDT-HO": ["Mhd Sori Alamsyah Harahap", "Zulkifli Rusli", "Abdilah Abd Kadir", "Andrianus Samulia", "Try Wahyudi Suparto Kemhay", "Faisal Hi Yusup", "Hairun Gorontalo", "Eka Apriyanto", "Dewendi Desen Sombolayuk", "Mukhlis Tuloli", "Dedi Tri Haryono", "Mirdad", "Rifail", "Ferdiansyah", "Imran Aras", "Edy Mahmudar Haera", "Muliyadi", "Faisal S. Kamaruddin, SE", "Rivon Gumabo", "Supantri Patingki", "Rivaldo Ravicky Jandy", "Ervianus", "Virianto Andrew Jofrans Mumu", "David  Rian Palimbong", "Ardian Sande", "Lobo Sanda Gallang", "Ikran Jaya", "Denis Tenor Paba'na", "Mustakim", "Edi Kurniawan Haera", "Denny Pansariang", "Hari Romli", "Reza", "Abdul Rahman", "Arrasid Pattiekon", "Deri N Tomahir", "Subarmin Tandiono", "Mustapa", "Agustian Manoppo", "Andi", "Muhammad Saiful", "Yoga Angkara", "Leksi Rattin", "Mumammad Amin", "Asrul Syha", "Ramli NR", "Hendra Darui", "Ikbal", "Arwan", "Rudi Ridwan Kurdi", "Lucky A Bawia", "Hariyanto Rinto Lelemboto", "Santo Hi Anhar", "Abdjan A.Lagana", "Ta' eto", "Ali Hanafi Anjarang", "Roy (1)", "Jonatan Fatan Atilida", "Advend Sipehelut", "Ramly Tangesau", "Novianus E.Tontong", "Sanji Alfin Gunawan", "Syamsul", "Stevi Legi"]
+            "HDT-HO": ["HDT-HO-53", "HDT-HO-54", "Mhd Sori Alamsyah Harahap", "Zulkifli Rusli", "Abdilah Abd Kadir", "Andrianus Samulia", "Try Wahyudi Suparto Kemhay", "Faisal Hi Yusup", "Hairun Gorontalo", "Eka Apriyanto", "Dewendi Desen Sombolayuk", "Mukhlis Tuloli", "Dedi Tri Haryono", "Mirdad", "Rifail", "Ferdiansyah", "Imran Aras", "Edy Mahmudar Haera", "Muliyadi", "Faisal S. Kamaruddin, SE", "Rivon Gumabo", "Supantri Patingki", "Rivaldo Ravicky Jandy", "Ervianus", "Virianto Andrew Jofrans Mumu", "David  Rian Palimbong", "Ardian Sande", "Lobo Sanda Gallang", "Ikran Jaya", "Denis Tenor Paba'na", "Mustakim", "Edi Kurniawan Haera", "Denny Pansariang", "Hari Romli", "Reza", "Abdul Rahman", "Arrasid Pattiekon", "Deri N Tomahir", "Subarmin Tandiono", "Mustapa", "Agustian Manoppo", "Andi", "Muhammad Saiful", "Yoga Angkara", "Leksi Rattin", "Mumammad Amin", "Asrul Syha", "Ramli NR", "Hendra Darui", "Ikbal", "Arwan", "Rudi Ridwan Kurdi", "Lucky A Bawia", "Hariyanto Rinto Lelemboto", "Santo Hi Anhar", "Abdjan A.Lagana", "Ta' eto", "Ali Hanafi Anjarang", "Roy (1)", "Jonatan Fatan Atilida", "Advend Sipehelut", "Ramly Tangesau", "Novianus E.Tontong", "Sanji Alfin Gunawan", "Syamsul", "Stevi Legi"]
         };
 
         const unitDB = {
@@ -293,6 +262,21 @@
         };
 
         let dataLapang = [];
+        let isDarkMode = true;
+
+        // Custom Swal configuration matching theme
+        const showToast = (icon, title, text) => {
+            Swal.fire({
+                icon: icon,
+                title: title,
+                text: text,
+                customClass: {
+                    popup: isDarkMode ? 'swal-dark' : '',
+                    title: isDarkMode ? 'swal-dark' : ''
+                },
+                confirmButtonColor: '#f59e0b'
+            });
+        };
 
         function initDatalists() {
             let html = '';
@@ -309,13 +293,35 @@
             document.body.insertAdjacentHTML('beforeend', html);
         }
 
+        function updateNetworkIndicator() {
+            const indicator = document.getElementById('network-indicator');
+            if (navigator.onLine) {
+                indicator.className = "fixed top-4 right-4 z-50 flex items-center px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase transition-all shadow-lg border bg-green-500/20 text-green-500 border-green-500";
+                indicator.innerHTML = '<div class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></div> Online';
+            } else {
+                indicator.className = "fixed top-4 right-4 z-50 flex items-center px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase transition-all shadow-lg border bg-red-500/20 text-red-500 border-red-500";
+                indicator.innerHTML = '<div class="w-2 h-2 rounded-full bg-red-500 mr-2 animate-pulse"></div> Offline';
+            }
+        }
+
+        window.addEventListener('online', updateNetworkIndicator);
+        window.addEventListener('offline', updateNetworkIndicator);
+
+        // Pencegahan Navigasi Jika Ada Data Tunda
+        window.addEventListener('beforeunload', function (e) {
+            if (localStorage.getItem('v4_pending_sync')) {
+                e.preventDefault();
+                e.returnValue = 'Data rekap belum disinkronisasi ke server. Yakin ingin keluar?';
+            }
+        });
+
         function initClock() {
             setInterval(() => {
                 const now = new Date();
                 const opsi = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
                 const tanggal = now.toLocaleDateString('id-ID', opsi);
                 const waktu = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                document.getElementById('live-clock').innerHTML = `<i class="fa-regular fa-clock text-primary mr-2"></i> ${tanggal} — <span class="text-primary font-mono font-bold">${waktu} WITA</span>`;
+                document.getElementById('live-clock').innerHTML = `<i class="fa-regular fa-clock text-primary mr-2"></i> ${tanggal} — <span class="text-primary font-mono font-bold">${waktu} WIT</span>`;
             }, 1000);
         }
 
@@ -442,7 +448,7 @@
                         <div class="pt-3 border-t border-gray-800/60 grid grid-cols-2 gap-2">
                             <input type="text" id="add-id-${catIdx}" placeholder="Ketik Kode Unit..." list="units-${catData.kategori}" autocomplete="off" class="input-clean text-xs w-full">
                             <input type="text" id="add-op-${catIdx}" placeholder="Ketik Nama Op..." list="ops-${catData.kategori}" autocomplete="off" class="input-clean text-xs w-full">
-                            <button onclick="addUnit(${catIdx})" class="col-span-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-primary font-bold py-1.5 rounded-md text-[11px] transition-all">
+                            <button onclick="addUnit(${catIdx})" class="col-span-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-primary font-bold py-2 rounded-md text-[11px] transition-all">
                                 <i class="fa-solid fa-plus mr-1"></i> Tambah Armada
                             </button>
                         </div>
@@ -560,9 +566,9 @@
             const checker = document.getElementById('staff-checker').value || '-';
 
             let pesan = `*Report Unit & Operator*\n\n`;
-            pesan += `Area : ${area}\n`;
-            pesan += `Shift : ${shift}\n`;
-            pesan += `Tanggal : ${tglFormatted}\n\n`;
+            pesan += `*Area* : ${area}\n`;
+            pesan += `*Shift* : ${shift}\n`;
+            pesan += `*Tanggal* : ${tglFormatted}\n\n`;
 
             dataLapang.forEach(cat => {
                 if (cat.unit.length > 0) {
@@ -579,8 +585,7 @@
             pesan += `\n*Terima Kasih*`;
             
             pesan = pesan.trim();
-            const encodedText = encodeURIComponent(pesan);
-            window.open(`https://wa.me/?text=${encodedText}`, '_blank');
+            window.open(`https://wa.me/?text=${encodeURIComponent(pesan)}`, '_blank');
         }
 
         function kirimKeWAAkhir() {
@@ -590,14 +595,10 @@
             const tanggal = document.getElementById('info-tanggal').value;
             const tglFormatted = formatTanggal(tanggal);
 
-            const spv = document.getElementById('staff-spv').value || '-';
-            const pengawas = document.getElementById('staff-pengawas').value || '-';
-            const checker = document.getElementById('staff-checker').value || '-';
-
             let pesan = `*Report Unit Akhir Shift*\n\n`;
-            pesan += `Area : ${area}\n`;
-            pesan += `Shift : ${shift}\n`;
-            pesan += `Tanggal : ${tglFormatted}\n\n`;
+            pesan += `*Area* : ${area}\n`;
+            pesan += `*Shift* : ${shift}\n`;
+            pesan += `*Tanggal* : ${tglFormatted}\n\n`;
 
             dataLapang.forEach(cat => {
                 if (cat.unit.length > 0) {
@@ -616,10 +617,7 @@
             });
 
             pesan += `*Terima Kasih*\n`;
-
-            pesan = pesan.trim();
-            const encodedText = encodeURIComponent(pesan);
-            window.open(`https://wa.me/?text=${encodedText}`, '_blank');
+            window.open(`https://wa.me/?text=${encodeURIComponent(pesan.trim())}`, '_blank');
         }
 
         function toggleCheck(catIdx, unitIdx) {
@@ -638,28 +636,46 @@
             saveToStorage();
         }
 
+        // --- SMART VALIDATION ---
         function addUnit(catIdx) {
+            const catName = dataLapang[catIdx].kategori;
+            const validUnits = unitDB[catName] || [];
+            const validOps = operatorDB[catName] || [];
+
             const idInput = document.getElementById(`add-id-${catIdx}`);
             const opInput = document.getElementById(`add-op-${catIdx}`);
             const codeInput = idInput.value.trim().toUpperCase();
-            if (!codeInput) return alert("Kode Unit wajib diisi!");
+            const operatorInput = opInput.value.trim();
 
-            // Validasi duplikasi unit lintas kategori secara global
+            if (!codeInput || !operatorInput) {
+                showToast('warning', 'Validasi Gagal', 'Kode Unit dan Nama Operator wajib diisi!');
+                return;
+            }
+
+            // Strict Validation checks
+            if (!validUnits.includes(codeInput)) {
+                showToast('error', 'Unit Tidak Valid', `Unit '${codeInput}' tidak ditemukan di database resmi.`);
+                return;
+            }
+            if (!validOps.includes(operatorInput)) {
+                showToast('error', 'Operator Tidak Valid', `Operator '${operatorInput}' tidak ditemukan atau salah ejaan.`);
+                return;
+            }
+
+            // Cek duplikasi
             let isExist = false;
             dataLapang.forEach(cat => {
-                if(cat.unit.some(u => u.id === codeInput)) {
-                    isExist = true;
-                }
+                if(cat.unit.some(u => u.id === codeInput)) isExist = true;
             });
 
             if (isExist) {
-                alert(`Gagal! Kode Unit ${codeInput} sudah terdaftar sebelumnya dalam sistem.`);
+                showToast('info', 'Duplikasi', `Kode Unit ${codeInput} sudah ada dalam daftar shift ini.`);
                 return;
             }
 
             dataLapang[catIdx].unit.push({
                 id: codeInput,
-                operator: opInput.value.trim() || "Unknown",
+                operator: operatorInput,
                 checked: false, statusAkhir: "READY", kendala: ""
             });
 
@@ -668,36 +684,135 @@
         }
 
         function deleteUnit(catIdx, unitIdx) {
-            dataLapang[catIdx].unit.splice(unitIdx, 1);
-            saveToStorage(); renderAwalShift();
+            Swal.fire({
+                title: 'Hapus Unit?',
+                text: "Anda yakin ingin menghapus unit ini dari daftar?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    popup: isDarkMode ? 'swal-dark' : '',
+                    title: isDarkMode ? 'swal-dark' : ''
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    dataLapang[catIdx].unit.splice(unitIdx, 1);
+                    saveToStorage(); 
+                    renderAwalShift();
+                }
+            });
         }
 
         function resetSemuaData() {
-            if(confirm("PENTING: Langkah ini akan menghapus permanen semua list unit yang sudah Anda buat di browser ini dan kembali ke pengaturan awal. Lanjutkan?")) {
-                localStorage.removeItem('v4_prod_data');
-                window.location.reload();
-            }
+            Swal.fire({
+                title: 'Reset Total Perangkat?',
+                text: "Semua daftar unit yang telah disusun akan terhapus permanen dari browser ini.",
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Reset Sekarang!',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    popup: isDarkMode ? 'swal-dark' : '',
+                    title: isDarkMode ? 'swal-dark' : ''
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('v4_prod_data');
+                    window.location.reload();
+                }
+            });
         }
 
-        /* FUNGSI TOGGLE THEME (OUTDOOR LIGHT MODE) */
         function initTheme() {
             const savedTheme = localStorage.getItem('v4_theme') || 'dark';
-            if (savedTheme === 'light') {
-                document.body.classList.add('light-theme');
-            }
+            isDarkMode = savedTheme === 'dark';
+            if (!isDarkMode) document.body.classList.add('light-theme');
         }
 
         function toggleTheme() {
-            if (document.body.classList.contains('light-theme')) {
-                document.body.classList.remove('light-theme');
-                localStorage.setItem('v4_theme', 'dark');
-            } else {
+            isDarkMode = !isDarkMode;
+            if (!isDarkMode) {
                 document.body.classList.add('light-theme');
                 localStorage.setItem('v4_theme', 'light');
+            } else {
+                document.body.classList.remove('light-theme');
+                localStorage.setItem('v4_theme', 'dark');
             }
         }
 
-        /* PANEL SINIKRONISASI & ANTRIAN OFFLINE CONTAINER INDICATOR */
+        // --- ONE-CLICK EXPORT PDF ---
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const now = new Date();
+            
+            // Header
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.text('LAPORAN OPERASIONAL SHIFT', 14, 20);
+            
+            // Info
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.text(`Area / Lokasi   : ${document.getElementById('info-area').value || '-'}`, 14, 30);
+            doc.text(`Shift                 : ${document.getElementById('info-shift').value}`, 14, 36);
+            doc.text(`Tanggal           : ${formatTanggal(document.getElementById('info-tanggal').value)}`, 14, 42);
+            doc.text(`Pengawas       : ${document.getElementById('staff-pengawas').value || '-'}`, 120, 30);
+            doc.text(`Checker          : ${document.getElementById('staff-checker').value || '-'}`, 120, 36);
+
+            // Menyiapkan Data Tabel
+            let tableData = [];
+            dataLapang.forEach(cat => {
+                cat.unit.forEach(u => {
+                    tableData.push([
+                        cat.kategori,
+                        u.id,
+                        u.operator,
+                        u.statusAkhir,
+                        u.kendala || '-'
+                    ]);
+                });
+            });
+
+            if (tableData.length === 0) {
+                showToast('warning', 'Laporan Kosong', 'Tidak ada data unit untuk dicetak.');
+                return;
+            }
+
+            doc.autoTable({
+                startY: 50,
+                head: [['Kategori', 'Kode Unit', 'Nama Operator', 'Status Akhir', 'Keterangan Masalah']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: { fillColor: [245, 158, 11], textColor: [0, 0, 0], fontStyle: 'bold' },
+                didParseCell: function (data) {
+                    if (data.section === 'body' && data.column.index === 3) {
+                        if (data.cell.raw === 'BREAKDOWN') {
+                            data.cell.styles.textColor = [239, 68, 68];
+                            data.cell.styles.fontStyle = 'bold';
+                        } else {
+                            data.cell.styles.textColor = [16, 185, 129];
+                        }
+                    }
+                }
+            });
+
+            // Waktu Cetak
+            const finalY = doc.lastAutoTable.finalY || 50;
+            doc.setFontSize(8);
+            doc.setTextColor(150);
+            doc.text(`Dicetak melalui FALK PWA Tracker pada: ${now.toLocaleString('id-ID')} WIT`, 14, finalY + 10);
+
+            doc.save(`Laporan_Shift_${document.getElementById('info-tanggal').value}.pdf`);
+            showToast('success', 'PDF Berhasil Dicetak', 'Silakan periksa folder unduhan perangkat Anda.');
+        }
+
+        // --- SINKRONISASI DATA ---
         function updateSyncIndicator() {
             const pendingData = localStorage.getItem('v4_pending_sync');
             let indicator = document.getElementById('offline-sync-banner');
@@ -706,9 +821,9 @@
                 if (!indicator) {
                     const mainClockContainer = document.getElementById('live-clock').parentElement;
                     mainClockContainer.insertAdjacentHTML('afterend', `
-                        <div id="offline-sync-banner" onclick="trySyncPendingData()" class="mt-3 cursor-pointer bg-amber-500/20 border border-amber-600 text-amber-500 p-3 rounded-xl flex items-center justify-between text-xs font-bold animate-pulse">
-                            <span><i class="fa-solid fa-triangle-exclamation mr-2"></i> Ada data tertunda belum masuk server pusat (Offline Queue). Klik untuk sinkron ulang!</span>
-                            <span class="underline uppercase tracking-wider text-[10px]">Sinkron Sekarang</span>
+                        <div id="offline-sync-banner" onclick="trySyncPendingData()" class="mt-3 cursor-pointer bg-amber-500/20 border border-amber-600 text-amber-500 p-3 rounded-xl flex items-center justify-between text-xs font-bold animate-pulse shadow-md">
+                            <span><i class="fa-solid fa-triangle-exclamation mr-2"></i> Ada antrean data Offline. Klik di sini untuk sinkron!</span>
+                            <span class="underline uppercase tracking-wider text-[10px]">Sinkron</span>
                         </div>
                     `);
                 }
@@ -722,13 +837,13 @@
             if (!pendingData) return;
 
             if (!navigator.onLine) {
-                alert("Koneksi Internet belum terdeteksi. Silakan cari sinyal terlebih dahulu!");
+                showToast('error', 'Koneksi Gagal', 'Anda masih di area tanpa sinyal Internet.');
                 return;
             }
 
             const parsedData = JSON.parse(pendingData);
             const banner = document.getElementById('offline-sync-banner');
-            if (banner) banner.innerHTML = '<span><i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengirim paksa data antrean pusat...</span>';
+            if (banner) banner.innerHTML = '<span><i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengunggah antrean...</span>';
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -736,12 +851,12 @@
             })
             .then(res => res.text())
             .then(result => {
-                alert("Luar Biasa! Data tunda luar jaringan berhasil terunggah sepenuhnya ke Google Sheets pusat.");
+                showToast('success', 'Sinkronisasi Sukses', 'Data offline berhasil mendarat di Google Sheets.');
                 localStorage.removeItem('v4_pending_sync');
                 updateSyncIndicator();
             })
             .catch(err => {
-                alert("Proses sinkronisasi ulang gagal. Sistem mengamankan kembali data ke antrean perangkat.");
+                showToast('error', 'Unggah Gagal', 'Server menolak koneksi. Data masih aman di antrean lokal.');
                 updateSyncIndicator();
             });
         }
@@ -758,12 +873,12 @@
             initClock();
             loadSavedData();
             initTheme();
+            updateNetworkIndicator();
             updateSyncIndicator();
         };
 
         window.addEventListener('online', trySyncPendingData);
 
-        // KONEKSI GOOGLE SHEETS API
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC_gNvZyvg2HWvZ2-9VuIe22tbd1cfqsrU4_nE3Qa1upmCaviA9r8SbpHplSyFdHKPmQ/exec";
 
         function kirimKeGoogleSheets() {
@@ -779,35 +894,27 @@
             dataLapang.forEach(cat => {
                 cat.unit.forEach(u => {
                     dataUntukDikirim.push({
-                        tanggal: tanggal,
-                        area: area,
-                        shift: shift,
-                        spv: spv,
-                        pengawas: pengawas,
-                        checker: checker,
-                        kategori: cat.kategori,
-                        kode_unit: u.id,
-                        operator: u.operator,
-                        status_akhir: u.statusAkhir || 'READY',
-                        kendala: u.kendala || '-'
+                        tanggal: tanggal, area: area, shift: shift,
+                        spv: spv, pengawas: pengawas, checker: checker,
+                        kategori: cat.kategori, kode_unit: u.id, operator: u.operator,
+                        status_akhir: u.statusAkhir || 'READY', kendala: u.kendala || '-'
                     });
                 });
             });
 
             if(dataUntukDikirim.length === 0) {
-                alert("Belum ada data unit untuk dikirim!");
+                showToast('info', 'Data Kosong', 'Belum ada data unit yang diinput untuk disimpan.');
                 return;
             }
 
             const btnSubmit = document.getElementById('btn-sinkron');
             const originalText = btnSubmit.innerHTML;
-            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengunci Server...';
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengunci...';
             btnSubmit.disabled = true;
 
-            // Logika Deteksi Koneksi Offline untuk Melakukan Queuing Data
             if (!navigator.onLine) {
                 localStorage.setItem('v4_pending_sync', JSON.stringify(dataUntukDikirim));
-                alert("Koneksi Internet Terputus! Data Anda aman disimpan dalam antrean offline lokal browser. Cari sinyal dan klik banner di atas untuk unggah.");
+                showToast('warning', 'Mode Offline Aktif', 'Koneksi terputus. Data diamankan ke antrean perangkat.');
                 btnSubmit.innerHTML = originalText;
                 btnSubmit.disabled = false;
                 updateSyncIndicator();
@@ -820,7 +927,7 @@
             })
             .then(response => response.text())
             .then(result => {
-                alert("Mantap! Data berhasil tersimpan ke sistem pusat (Google Sheets).");
+                showToast('success', 'Database Terkunci', 'Data sukses mendarat di Google Sheets.');
                 localStorage.removeItem('v4_pending_sync');
                 btnSubmit.innerHTML = originalText;
                 btnSubmit.disabled = false;
@@ -828,8 +935,7 @@
             })
             .catch(error => {
                 localStorage.setItem('v4_pending_sync', JSON.stringify(dataUntukDikirim));
-                alert("Gagal terhubung langsung. Data diamankan ke penyimpanan lokal antrean offline.");
-                console.error(error);
+                showToast('error', 'Koneksi Terputus', 'Gagal memanggil server pusat. Data diamankan ke antrean.');
                 btnSubmit.innerHTML = originalText;
                 btnSubmit.disabled = false;
                 updateSyncIndicator();
@@ -841,8 +947,8 @@
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('PWA Service Worker Berhasil Didaftarkan!'))
-            .catch(err => console.error('Gagal mendaftarkan Service Worker:', err));
+            .then(reg => console.log('PWA SW Terhubung'))
+            .catch(err => console.error('PWA SW Gagal:', err));
         });
       }
     </script>
